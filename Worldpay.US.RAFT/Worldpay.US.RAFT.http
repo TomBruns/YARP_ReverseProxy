@@ -1,0 +1,47 @@
+@Worldpay.US.RAFT_HostAddress = http://localhost:5285
+@ApiVersion = v2
+
+# ===================
+# Swagger
+# ===================
+GET {{Worldpay.US.RAFT_HostAddress}}/swagger/v2/swagger.json
+Accept: application/json
+
+# ===================
+# Payments Controller
+# ===================
+GET {{Worldpay.US.RAFT_HostAddress}}/api/{{ApiVersion}}/payments/authorize
+Accept: application/json
+
+###
+
+# ===================
+# Debug Controller
+# ===================
+GET {{Worldpay.US.RAFT_HostAddress}}/api/{{ApiVersion}}/debug/version
+Accept: application/json
+
+###
+
+GET {{Worldpay.US.RAFT_HostAddress}}/api/{{ApiVersion}}/debug/headers
+Accept: application/json
+
+###
+
+# ===================
+# Weather Controller
+# ===================
+GET {{Worldpay.US.RAFT_HostAddress}}/api/{{ApiVersion}}/weather/forecast
+Accept: application/json
+
+###
+
+GET {{Worldpay.US.RAFT_HostAddress}}/api/{{ApiVersion}}/weather/forecast?numberOfDays=2
+Accept: application/json
+
+###
+
+GET {{Worldpay.US.RAFT_HostAddress}}/api/{{ApiVersion}}/weather/forecast?numberOfDays=7
+Accept: application/json
+
+###

@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34322.80
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Worldpay.US.RAFT", "Worldpay.US.RAFT\Worldpay.US.RAFT.csproj", "{4D2AA741-4A7B-4357-BC7D-BCAC6C7E9D33}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{00E4BF30-4C94-42B0-8B9E-C50B8BDACA23}"
+	ProjectSection(SolutionItems) = preProject
+		ReadMe.md = ReadMe.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ControllerStyle", "ControllerStyle", "{8206822F-A95B-49EA-B625-948F805B19E3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MinimalAPIStyle", "MinimalAPIStyle", "{160CEAF3-9DC6-4CD1-A6E7-C6FA5EE5ED3D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Worldpay.US.Express", "Worldpay.US.Express\Worldpay.US.Express.csproj", "{302FA229-7878-4D4D-B440-15AC84C252EC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReverseProxy", "ReverseProxy", "{B756F9F4-61B6-4FD9-A7D4-D7C495DDED54}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Worldpay.US.ReverseProxy", "Worldpay.US.ReverseProxy\Worldpay.US.ReverseProxy.csproj", "{67893DD2-9DD0-4F1B-AB74-37D5EB9C4178}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{C6DEA039-CAB5-44E0-9FE1-3C88557DA525}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worldpay.US.Swagger.Extensions", "Worldpay.US.Swagger.Extensions\Worldpay.US.Swagger.Extensions.csproj", "{6498AEF0-2511-452D-B125-E736D716978B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D2AA741-4A7B-4357-BC7D-BCAC6C7E9D33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D2AA741-4A7B-4357-BC7D-BCAC6C7E9D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D2AA741-4A7B-4357-BC7D-BCAC6C7E9D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D2AA741-4A7B-4357-BC7D-BCAC6C7E9D33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{302FA229-7878-4D4D-B440-15AC84C252EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{302FA229-7878-4D4D-B440-15AC84C252EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{302FA229-7878-4D4D-B440-15AC84C252EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{302FA229-7878-4D4D-B440-15AC84C252EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67893DD2-9DD0-4F1B-AB74-37D5EB9C4178}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67893DD2-9DD0-4F1B-AB74-37D5EB9C4178}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67893DD2-9DD0-4F1B-AB74-37D5EB9C4178}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67893DD2-9DD0-4F1B-AB74-37D5EB9C4178}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6498AEF0-2511-452D-B125-E736D716978B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6498AEF0-2511-452D-B125-E736D716978B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6498AEF0-2511-452D-B125-E736D716978B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6498AEF0-2511-452D-B125-E736D716978B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4D2AA741-4A7B-4357-BC7D-BCAC6C7E9D33} = {8206822F-A95B-49EA-B625-948F805B19E3}
+		{302FA229-7878-4D4D-B440-15AC84C252EC} = {160CEAF3-9DC6-4CD1-A6E7-C6FA5EE5ED3D}
+		{67893DD2-9DD0-4F1B-AB74-37D5EB9C4178} = {B756F9F4-61B6-4FD9-A7D4-D7C495DDED54}
+		{6498AEF0-2511-452D-B125-E736D716978B} = {C6DEA039-CAB5-44E0-9FE1-3C88557DA525}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8ED0712E-A620-4BF2-9BFD-98FBA461FDFD}
+	EndGlobalSection
+EndGlobal
