@@ -7,12 +7,17 @@ This solution was created as a technology demonstrator for a number of webAPI co
 - Support standard Swagger features in both implementations:
 	- Path based API versioning
 	- (Response) Examples
-- Implement a front-end **Reverse Proxy** using YARP that can route requests to the correct backend implementation.
+- Support standard webAPI features in both implementations:
+	- Health Checks		*(Note: this only work via direct access)*
+		- https://localhost:7047/health  (raft)
+		- https://localhost:7174/health  (express)
+- Implement a front-end **Reverse Proxy** using YARP that can route requests to the correct backend implementation based on a part of the URL path.
+	- Block downstream health check endpoints from external callers and return a 404
 - Run performance tests (using k6) to compare the relative performance of:
 	- Controller vs Mimimal API style webAPIs
 	- latency impact of adding a YARP based reverse proxy in front of the webAPI implementations
 
-![Overall Solution Architecture diagram](https:replaceme.png)
+![Overall Solution Architecture diagram](https://github.com/TomBruns/YARP_ReverseProxy/blob/master/images/architecture.png?raw=true)
 
 ##Reverse Proxy
 
@@ -83,15 +88,15 @@ A new swagger extension `SwaggerReverseProxyExtensions` was created to use the *
 
 ##Controller vs Minimal API
 
-![Controller vs Minimal API avg time graph](https:replaceme.png)
+![Controller vs Minimal API avg time graph](https://github.com/TomBruns/YARP_ReverseProxy/blob/master/images/ctlr_vs_min_avg_response.png?raw=true)
 
-![Controller vs Minimal API p95 time graph](https:replaceme.png)
+![Controller vs Minimal API p95 time graph](https://github.com/TomBruns/YARP_ReverseProxy/blob/master/images/ctlr_vs_min_p95_response.png?raw=true)
 
 Notes:
 - With **minimal webAPI logic**, Minimal APIs are roughtly 10% faster then Controller Style webAPIs
 - This performance margin may be less significant as execution time inside the endpoint increases
 
-![YARP Contribution graph](https:replaceme.png)
+![YARP Contribution graph](https://github.com/TomBruns/YARP_ReverseProxy/blob/master/images/yarp_contrib_to_response_time.png?raw=true)
 
 Notes:
 - YARP **adds less then 1 mSec** to overall latency
@@ -143,15 +148,15 @@ Here are some of the useful URLs available when running the projects:
 | csproj name | Base Endpoint                    |  URLs | 
 | ------------- | ------------------------------ | 
 | `Worldpay.US.ReverseProxy` | https://localhost:7296 <br> http://localhost:5268     |  RAFT <br> - https://localhost:7296/raft/swagger/index.html <br>  - https://localhost:7296/raft/api/v2/Payments/authorize <br> Express <br> - https://localhost:7296/express/swagger/index.html  <br>- https://localhost:7296/express/api/v2/payments/authorize <br> - https://localhost:7296/raft/api/v2/debug/headers <br> - https://localhost:7296/express/api/v2/debug/headers |
-| `Worldpay.US.RAFT`      | https://localhost:7047 <br> http://localhost:5285     |  - https://localhost:7047/swagger<br>  - https://localhost:7047/api/v1/Weather/forecast?numberOfDays=5 <br>- https://localhost:7047/api/v2/Payments/authorize  |
-| `Worldpay.US.Express`   | https://localhost:7174 <br> http://localhost:5233     |  - https://localhost:7174/swagger<br>  - https://localhost:7174/api/v1/Weather/forecast?numberOfDays=5 <br>- https://localhost:7174/api/v2/Payments/authorize   |
+| `Worldpay.US.RAFT`      | https://localhost:7047 <br> http://localhost:5285     |  - https://localhost:7047/swagger<br>  - https://localhost:7047/health<br> - https://localhost:7047/api/v1/Weather/forecast?numberOfDays=5 <br>- https://localhost:7047/api/v2/Payments/authorize  |
+| `Worldpay.US.Express`   | https://localhost:7174 <br> http://localhost:5233     |  - https://localhost:7174/swagger<br>  - https://localhost:7174/health<br>- https://localhost:7174/api/v1/Weather/forecast?numberOfDays=5 <br>- https://localhost:7174/api/v2/Payments/authorize   |
 
 
 #Running the three (3) projects
 
 *Hint: Consider using **Windows Terminal**  to organize the command line sessions*
 
-![Windows Terminal Screenshot](https:replaceme.png)
+![Windows Terminal Screenshot](https://github.com/TomBruns/YARP_ReverseProxy/blob/master/images/windows%20terminal.png?raw=true)
 
 You can run each project after building using the **exe** in the output folder
 
@@ -193,9 +198,10 @@ C:\Users\e5593810\source\repos\FISGitHub\YARP_ReverseProxy\Worldpay.US.ReversePr
 
 #Running performance tests
 
-1. Start release builds of the three (3) projects
-2. Change your working directory to the ```k6_load_tests``` directory in the project
-3. Edit the k6 script file ```loadtest_webapi.js``` and uncomment the endpoint you want to call
+1. Configure all appsettings.josn file to minimize console logging
+2. Start release builds of the three (3) projects
+3. Change your working directory to the ```k6_load_tests``` directory in the project
+4. Edit the k6 script file ```loadtest_webapi.js``` and uncomment the endpoint you want to call
 
 	```javascript
 	export default function() {
@@ -208,7 +214,7 @@ C:\Users\e5593810\source\repos\FISGitHub\YARP_ReverseProxy\Worldpay.US.ReversePr
 		});
 ```
 
-4. Execute the performance test from the commannd line
+5. Execute the performance test from the commannd line
 
 ```shell
 C:\Users\e5593810\source\repos\FISGitHub\YARP_ReverseProxy\k6_load_tests>k6 run loadtest_webapi.js

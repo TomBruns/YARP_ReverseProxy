@@ -7,6 +7,7 @@ using Asp.Versioning;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 using Worldpay.US.RAFT.Swagger;
+using Worldpay.US.RAFT.Utilities;
 using Worldpay.US.Swagger.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,6 +43,9 @@ builder.Services.AddApiVersioning(
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+
+builder.Services.AddHealthChecks()
+                    .AddCheck<HealthChecks>(@"RAFT");
 
 builder.Services.AddSwaggerGen(
     options =>
@@ -88,6 +92,8 @@ builder.Services.AddSwaggerGen(
     });
 
 var app = builder.Build();
+
+app.MapHealthChecks("/health");
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())

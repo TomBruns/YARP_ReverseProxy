@@ -49,8 +49,21 @@ Accept: application/json
 
 ###
 
-# does not make sense to use
+# does not make sense to use that you would use the load balanced config, but it works
 GET {{Worldpay.US.Proxy_HostAddress}}/api/{{ApiVersion}}/debug/headers
+Accept: application/json
+
+###
+
+# ===================
+# Health Checks (should be blocked from the outside)
+# ===================
+GET {{Worldpay.US.Proxy_HostAddress}}/express/health
+Accept: application/json
+
+###
+
+GET {{Worldpay.US.Proxy_HostAddress}}/raft/health
 Accept: application/json
 
 ###

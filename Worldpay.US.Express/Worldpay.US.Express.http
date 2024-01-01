@@ -21,8 +21,8 @@ Accept: application/json
 # ===================
 # Debug Controller
 # ===================
-GET {{Worldpay.US.Express_HostAddress}}/api/{{ApiVersion}}/debug/version
-Accept: application/json
+#GET {{Worldpay.US.Express_HostAddress}}/api/{{ApiVersion}}/debug/version
+#Accept: application/json
 
 ###
 

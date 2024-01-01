@@ -10,6 +10,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Worldpay.US.Express.Swagger;
 using Worldpay.US.Express.v1.Routes;
 using Worldpay.US.Express.v2.Routes;
+using Worldpay.US.Express.Utilities;
 using Worldpay.US.Swagger.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,6 +47,9 @@ builder.Services.AddEndpointsApiExplorer()
                     });
 
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+
+builder.Services.AddHealthChecks()
+                    .AddCheck<HealthChecks>(@"Express");
 
 builder.Services.AddSwaggerGen(
     options =>
@@ -97,6 +101,8 @@ builder.Services.AddSwaggerGen(
 builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
 
 var app = builder.Build();
+
+app.MapHealthChecks("/health");
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
