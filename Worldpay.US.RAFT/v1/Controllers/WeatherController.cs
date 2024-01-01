@@ -8,6 +8,7 @@ using FluentValidation.AspNetCore;
 using Swashbuckle.AspNetCore.Annotations;
 
 using Worldpay.US.RAFT.v1.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Worldpay.US.RAFT.v1.Controllers;
 
@@ -17,6 +18,7 @@ namespace Worldpay.US.RAFT.v1.Controllers;
 [ApiVersion(1.0)]
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
+[AllowAnonymous]
 public class WeatherController : ControllerBase
 {
     private static readonly string[] Summaries = new[]

@@ -14,16 +14,16 @@ using Worldpay.US.RAFT.Swagger;
 using Worldpay.US.Swagger.Extensions;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Worldpay.US.RAFT.v2.Controllers;
+namespace Worldpay.US.RAFT.v3.Controllers;
 
 /// <summary>
 /// This class implements the Payments Service endpoints
 /// </summary>
-[ApiVersion(2.0)]
+[ApiVersion(3.0)]
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [SwaggerControllerDisplayOrder(1)]
-[AllowAnonymous]
+[Authorize]
 public class PaymentsController : ControllerBase
 {
     private readonly ILogger<PaymentsController> _logger;

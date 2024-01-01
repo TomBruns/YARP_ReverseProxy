@@ -9,6 +9,8 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Worldpay.US.RAFT.Swagger;
 using Worldpay.US.RAFT.Utilities;
 using Worldpay.US.Swagger.Extensions;
+using Swashbuckle.AspNetCore.Filters;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +52,10 @@ builder.Services.AddHealthChecks()
 builder.Services.AddSwaggerGen(
     options =>
     {
+        options.AddJWTSecurityDefinition();
+        // only show the lock icon on Controllers/Operations that do not have the AllowAnonymous Attribute
+        options.OperationFilter<SwaggerApiSecureOperationFilter>();
+
         // integrate xml comments
         options.AddXmlComments(@"Worldpay");
 
@@ -83,6 +89,15 @@ builder.Services.AddSwaggerGen(
                     new TagDescription() { Name = @"debug", Description = @"Debug Service endpoints"},
                     new TagDescription() { Name = @"weather", Description = @"Weather Service endpoints"}
                 }
+            },
+            {
+                @"v3",
+                new List<TagDescription>()
+                {
+                    new TagDescription() { Name = @"payments", Description = @"Payments Service endpoints"},
+                    new TagDescription() { Name = @"weather", Description = @"Weather Service endpoints"},
+                    new TagDescription() { Name = @"debug", Description = @"Debug Service endpoints"}
+                }
             }
         };
         options.DocumentFilter<SwaggerTagDescriptionsDocFilter>(apiVersionTagDescriptions);
@@ -90,6 +105,8 @@ builder.Services.AddSwaggerGen(
         // sort the order that the controllers are listed using the custom attribute: SwaggerControllerOrder, by default they are alphabetical
         options.OrderActionsBy((apiDesc) => $"{swaggerControllerOrder.SortKey(apiDesc.ActionDescriptor.RouteValues["controller"])}");
     });
+
+builder.Services.AddAuthentication("Bearer").AddJwtBearer();
 
 var app = builder.Build();
 

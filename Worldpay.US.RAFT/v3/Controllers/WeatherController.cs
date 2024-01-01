@@ -8,21 +8,21 @@ using FluentValidation.AspNetCore;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 
-using Worldpay.US.RAFT.v2.Models;
-using Worldpay.US.RAFT.v2.Examples;
+using Worldpay.US.RAFT.v3.Models;
+using Worldpay.US.RAFT.v3.Examples;
 using Worldpay.US.Swagger.Extensions;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Worldpay.US.RAFT.v2.Controllers;
+namespace Worldpay.US.RAFT.v3.Controllers;
 
 /// <summary>
 /// This class implements the Weather Service endpoints
 /// </summary>
-[ApiVersion(2.0)]
+[ApiVersion(3.0)]
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [SwaggerControllerDisplayOrder(3)]
-[AllowAnonymous]
+[Authorize]
 public class WeatherController : ControllerBase
 {
     private static readonly string[] Summaries = new[]
@@ -54,8 +54,8 @@ public class WeatherController : ControllerBase
     [ProducesResponseType(typeof(IEnumerable<WeatherForecastDTO>), 200)]
     [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
     [SwaggerOperation(Tags = new[] { "weather" })]
-    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(GetWeatherForecastv2_OkExamples))]
-    [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(GetWeatherForecastv2_BadRequestExamples))]
+    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(GetWeatherForecastv3_OkExamples))]
+    [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(GetWeatherForecastv3_BadRequestExamples))]
     public ActionResult<IEnumerable<WeatherForecastDTO>> GetWeatherForecast([FromQuery]int? numberOfDays = 5)
     {
         #region == Validation the input params

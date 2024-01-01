@@ -11,7 +11,17 @@ Accept: application/json
 
 ###
 
+GET {{Worldpay.US.Proxy_HostAddress}}/raft/swagger/v3/swagger.json
+Accept: application/json
+
+###
+
 GET {{Worldpay.US.Proxy_HostAddress}}/express/swagger/v2/swagger.json
+Accept: application/json
+
+###
+
+GET {{Worldpay.US.Proxy_HostAddress}}/express/swagger/v4/swagger.json
 Accept: application/json
 
 ###

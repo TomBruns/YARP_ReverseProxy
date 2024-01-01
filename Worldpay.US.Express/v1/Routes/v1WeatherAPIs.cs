@@ -48,6 +48,7 @@ internal static class v1WeatherAPIs
 
             return TypedResults.Ok(forecast);
         })
+        .AllowAnonymous()
         .WithName("getWeatherForecastv1")
         .WithTags("weather")
         .Produces<IEnumerable<WeatherForecastDTO>>(StatusCodes.Status200OK, @"application/json")

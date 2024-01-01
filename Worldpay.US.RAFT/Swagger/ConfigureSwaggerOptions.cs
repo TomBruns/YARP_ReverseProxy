@@ -101,9 +101,47 @@ namespace Worldpay.US.RAFT.Swagger
                                 </thead>
                                 <tbody>
                                     <tr>
+                                        <td>2024/1/1</td>
+                                        <td>v2.0.1</td>
+                                        <td>Added Health Check endpoint</td>
+                                    </tr>
+                                    <tr>
                                         <td>2023/12/19</td>
                                         <td>v2.0</td>
                                         <td>Alpha implementation</td>
+                                    </tr>
+                                </tbody>
+                            </table>";
+                    break;
+
+                case "3.0":
+                    info.Description = @"<b>Controller</b> based webAPIs endpoints w/ JWT Authentication
+                                    <br/>
+                                    <br/> 
+                                    Features:
+                                    <pre>   <span>&#8226;</span>  Implemented using legacy controller style
+                                    <pre>   <span>&#8226;</span>  Supports multiple API Versions
+                                    <pre>   <span>&#8226;</span>  Uses FluentValidation.AspNetCore to validate input parms
+                                    <pre>   <span>&#8226;</span>   Convert FluentValidation results to ProblemDetails
+                                    <pre>   <span>&#8226;</span>  Uses Swashbuckle.AspNetCore for Swagger Support
+                                    <pre>   <span>&#8226;</span>   Uses custom IDocumentFilter to add build d/t to info section of openapi file
+                                    <pre>   <span>&#8226;</span>   Uses custom IDocumentFilter to control Tags in place of controller xml comments
+                                    <pre>   <span>&#8226;</span>   Uses custom attribute to control order that tag groups are displayed
+                                    <pre>   <span>&#8226;</span>   Uses custom PreSerializeFilter to use X-Forwared-* headers when behind a reverse proxy
+                                    <br/> 
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Version</th>
+                                        <th>Changes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>2024/1/1</td>
+                                        <td>v2.0</td>
+                                        <td>Implement JWT Auth</td>
                                     </tr>
                                 </tbody>
                             </table>";

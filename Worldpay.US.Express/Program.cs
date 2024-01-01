@@ -10,6 +10,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Worldpay.US.Express.Swagger;
 using Worldpay.US.Express.v1.Routes;
 using Worldpay.US.Express.v2.Routes;
+using Worldpay.US.Express.v4.Routes;
 using Worldpay.US.Express.Utilities;
 using Worldpay.US.Swagger.Extensions;
 
@@ -54,6 +55,10 @@ builder.Services.AddHealthChecks()
 builder.Services.AddSwaggerGen(
     options =>
     {
+        options.AddJWTSecurityDefinition();
+        // only show the lock icon on Controllers/Operations that do not have the AllowAnonymous Attribute
+        options.OperationFilter<SwaggerApiSecureOperationFilter>();
+
         // integrate xml comments
         options.AddXmlComments(@"Worldpay");
 
@@ -66,17 +71,17 @@ builder.Services.AddSwaggerGen(
         // add filter to add custom Extensions to the info section of the OpenAPI file
         options.DocumentFilter<SwaggerBuildTimestampDocFilter>();
 
-        // add filter to add Tag Descriptions
+        // add filter to add Tag Descriptions (order listed controls the tag display order)
         var apiVersionTagDescriptions = new Dictionary<string, List<TagDescription>>()
         {
-            { 
-                @"v1", 
-                new List<TagDescription>() 
-                { 
+            {
+                @"v1",
+                new List<TagDescription>()
+                {
                     new TagDescription() { Name = @"weather", Description = @"Weather Service endpoints"}
-                } 
+                }
             },
-            {        
+            {
                 @"v2",
                 new List<TagDescription>()
                 {
@@ -84,21 +89,33 @@ builder.Services.AddSwaggerGen(
                     new TagDescription() { Name = @"debug", Description = @"Debug Service endpoints"},
                     new TagDescription() { Name = @"weather", Description = @"Weather Service endpoints"}
                 }
-            }
+            },
+            {
+                @"v4",
+                new List<TagDescription>()
+                {
+                    new TagDescription() { Name = @"payments", Description = @"Payments Service endpoints"},
+                    new TagDescription() { Name = @"weather", Description = @"Weather Service endpoints"},
+                    new TagDescription() { Name = @"debug", Description = @"Debug Service endpoints"}
+                }
+             }
         };
         options.DocumentFilter<SwaggerTagDescriptionsDocFilter>(apiVersionTagDescriptions);
 
         options.InferSecuritySchemes();
 
         // create instance of class supporting custom "Order By Custom Attribute" 
-        var swaggerControllerOrder = new SwaggerTagDisplayOrder(Assembly.GetEntryAssembly());
+        //var swaggerControllerOrder = new SwaggerTagDisplayOrder(Assembly.GetEntryAssembly());
 
         // sort the order that the tags are listed using the custom attribute: SwaggerTagDisplayOrder, by default they are alphabetical
         //  Note: "controller" is key in this oob collection even for minimal apis
-        options.OrderActionsBy((apiDesc) => $"{swaggerControllerOrder.SortKey(apiDesc.ActionDescriptor.RouteValues["controller"])}");
+        //options.OrderActionsBy((apiDesc) => $"{swaggerControllerOrder.SortKey(apiDesc.ActionDescriptor.RouteValues["controller"])}");
     });
 
 builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
+
+builder.Services.AddAuthentication("Bearer").AddJwtBearer();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -124,6 +141,7 @@ app.MapHealthChecks("/health");
         // needed this to get both versions to show up in the swagger ui
         options.SwaggerEndpoint("v1/swagger.json", "Version 1.0");
         options.SwaggerEndpoint("v2/swagger.json", "Version 2.0");
+        options.SwaggerEndpoint("v4/swagger.json", "Version 4.0");
 
         #region === Note: This standard code only found 1 version
         // TODO: we need to find out how to get this working for minimal api without the explicit code above
@@ -152,6 +170,14 @@ var v2 = apis.MapGroup("/api/v{version:apiVersion}")
                 .MapV2WeatherEndpoints()
                 .HasApiVersion(2.0);
 
+var v4 = apis.MapGroup("/api/v{version:apiVersion}")
+                .MapV4PaymentEndpoints()
+                .MapV4DebugEndpoints()
+                .MapV4WeatherEndpoints()
+                .HasApiVersion(4.0);
+
 //app.UseHttpsRedirection();
+
+app.UseAuthorization();
 
 app.Run();

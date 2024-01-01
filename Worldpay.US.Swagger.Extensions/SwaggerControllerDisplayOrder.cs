@@ -39,7 +39,7 @@ public class SwaggerControllerDisplayOrder<T>
         // from the attribute and store it as controllername -> sorderorder pair in the (case-insensitive) dicationary.
         orders = new Dictionary<string, uint>(
             controllers.Where(c => c.GetCustomAttributes<SwaggerControllerDisplayOrderAttribute>().Any())
-            .Select(c => new { Name = ResolveControllerName(c.Name), c.GetCustomAttribute<SwaggerControllerDisplayOrderAttribute>().Order })
+            .Select(c => new { Name = ResolveControllerName(c.FullName), c.GetCustomAttribute<SwaggerControllerDisplayOrderAttribute>().Order })
             .ToDictionary(v => v.Name, v => v.Order), StringComparer.OrdinalIgnoreCase);
     }
 

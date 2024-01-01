@@ -11,16 +11,16 @@ using Worldpay.US.RAFT.Swagger;
 using Worldpay.US.Swagger.Extensions;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Worldpay.US.RAFT.v2.Controllers;
+namespace Worldpay.US.RAFT.v3.Controllers;
 
 /// <summary>
 /// This class implements the Debug Service endpoints
 /// </summary>
-[ApiVersion(2.0)]
+[ApiVersion(3.0)]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiController]
 [SwaggerControllerDisplayOrder(2)]
-[AllowAnonymous]
+[Authorize]
 public class DebugController : ControllerBase
 {
     private readonly ILogger<DebugController> _logger;

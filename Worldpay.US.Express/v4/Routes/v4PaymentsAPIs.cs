@@ -7,11 +7,11 @@ using Asp.Versioning.Builder;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 
-using Worldpay.US.Express.v2.Models;
+using Worldpay.US.Express.v4.Models;
 using Worldpay.US.Express.Swagger;
 using Worldpay.US.Swagger.Extensions;
 
-namespace Worldpay.US.Express.v2.Routes;
+namespace Worldpay.US.Express.v4.Routes;
 
 /// <summary>
 /// This class defines all the Payments Routes
@@ -21,15 +21,15 @@ internal static class v4PaymentsAPIs
 {
     const string ROUTE_GROUP_PREFIX = @"payments";
 
-    public static RouteGroupBuilder MapV2PaymentEndpoints(this RouteGroupBuilder group)
+    public static RouteGroupBuilder MapV4PaymentEndpoints(this RouteGroupBuilder group)
     {
         group.MapGet($"/{ROUTE_GROUP_PREFIX}/authorize", () =>
         {
             //return Results.Ok(@"response from EXPRESS");  // doing this wraps the response in double quotes
             return Results.Text(@"response from EXPRESS");
         })
-        .AllowAnonymous()
-        .WithName("authorizev2")
+        .RequireAuthorization()
+        .WithName("authorizev4")
         .WithTags("payments")
         .Produces<string>(StatusCodes.Status200OK, @"text/plain")
         .WithOpenApi(operation => new(operation)

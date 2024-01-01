@@ -39,12 +39,12 @@ public class SwaggerTagDisplayOrder
         // from the attribute and store it as typeName -> sorderorder pair in the (case-insensitive) dicationary.
         _displayOrder = new Dictionary<string, uint>(
             controllers.Where(c => c.GetCustomAttributes<SwaggerTagDisplayOrderAttribute>().Any())
-            .Select(c => new { Name = c.Name, c.GetCustomAttribute<SwaggerTagDisplayOrderAttribute>().Order })
+            .Select(c => new { Name = c.FullName, c.GetCustomAttribute<SwaggerTagDisplayOrderAttribute>().Order })
             .ToDictionary(v => v.Name, v => v.Order), StringComparer.OrdinalIgnoreCase);
     }
 
     /// <summary>
-    /// Scans all types in the current assy and retuns any that have a specified attribute
+    /// Scans all types in the current assy and returns any that have a specified attribute
     /// </summary>
     /// <param name="assembly"></param>
     /// <returns></returns>

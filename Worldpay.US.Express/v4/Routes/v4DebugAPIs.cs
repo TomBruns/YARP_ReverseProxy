@@ -7,21 +7,21 @@ using Asp.Versioning.Builder;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 
-using Worldpay.US.Express.v2.Models;
+using Worldpay.US.Express.v4.Models;
 using Worldpay.US.Express.Swagger;
 using Worldpay.US.Swagger.Extensions;
 
-namespace Worldpay.US.Express.v2.Routes;
+namespace Worldpay.US.Express.v4.Routes;
 
 /// <summary>
 /// This class defines all the Debug Routes
 /// </summary>
-[SwaggerTagDisplayOrder(2)]
+[SwaggerTagDisplayOrder(3)]
 internal static class v4DebugAPIs
 {
     const string ROUTE_GROUP_PREFIX = @"debug";
 
-    public static RouteGroupBuilder MapV2DebugEndpoints(this RouteGroupBuilder group)
+    public static RouteGroupBuilder MapV4DebugEndpoints(this RouteGroupBuilder group)
     {
         group.MapGet($"/{ROUTE_GROUP_PREFIX}/headers", (HttpRequest request) =>
         {
@@ -35,8 +35,8 @@ internal static class v4DebugAPIs
 
             return Results.Text(headers.ToString());
         })
-        .AllowAnonymous()
-        .WithName("getHttpHeadersv2")
+        .RequireAuthorization()
+        .WithName("getHttpHeadersv4")
         .WithTags("debug")
         .Produces<string>(StatusCodes.Status200OK, @"text/plain")
         .WithOpenApi(operation => new(operation)
