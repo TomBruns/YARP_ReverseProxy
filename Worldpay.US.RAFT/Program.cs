@@ -13,14 +13,22 @@ using Swashbuckle.AspNetCore.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Worldpay.US.IDP;
 using Worldpay.US.JWTTokens;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Xml.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers().AddJsonOptions(
-    static options => options.JsonSerializerOptions.TypeInfoResolverChain.Add(TokenSigningInfoContextBE.Default));
+builder.Services.AddControllers()
+                .AddJsonOptions(
+                                    // source generator class to correctly support TimeSpan types
+                                    static options => options.JsonSerializerOptions.TypeInfoResolverChain.Add(TokenSigningInfoContextBE.Default)
+                                );
 
 builder.Services.AddProblemDetails();
+
 builder.Services.AddApiVersioning(
                     options =>
                     {
@@ -64,7 +72,7 @@ builder.Services.AddSwaggerGen(
         options.AddXmlComments(@"Worldpay");
 
         // add a custom operation filter which sets default values
-        //options.OperationFilter<SwaggerDefaultValues>();  // I think this issue may be resolved in the RTM version
+        //options.OperationFilter<SwaggerDefaultValues>();  // I think this issue may be resolved in the .NET 8 RTM version
 
         // enable swagger annotations in Swashbuckle.AspNetCore.Annotations
         options.EnableAnnotations();
@@ -110,16 +118,38 @@ builder.Services.AddSwaggerGen(
         options.OrderActionsBy((apiDesc) => $"{swaggerControllerOrder.SortKey(apiDesc.ActionDescriptor.RouteValues["controller"])}");
     });
 
-builder.Services.AddAuthentication("Bearer").AddJwtBearer();
-
 // for now the JWT singing info is stored in a user secrets file
 //  in real use this info would be in an identity provider (ex iDP)
-var identityRepoInfo = builder.Configuration.GetSection("identityRepoInfo").Get<IdentityRepoInfoBE>();
+var identityRepoInfo = builder.Configuration.GetSection("identityRepoInfo").Get<IdentityRepoInfoBE>() ?? throw new ArgumentNullException("Missing App Config: [identityRepoInfo]");
+// create an instance of the iDP service
 var idp = new IdentityService(identityRepoInfo);
 builder.Services.AddSingleton(idp);
 
+// configure JWT authentication for Services or endpoints that have the [Authorize] attribute
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = identityRepoInfo.TokenSigningInfo.Issuer,
+                        ValidAudience = identityRepoInfo.TokenSigningInfo.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(identityRepoInfo.TokenSigningInfo.HMACSecret))
+                    };
+                });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ValidRAFTAuthHeader", policy => policy.Requirements.Add(new ValidRAFTAuthHeader()));
+});
+builder.Services.AddSingleton<IAuthorizationHandler, RAFTAuthorizationHandler>();
+
 var app = builder.Build();
 
+// add the health check endpoint
 app.MapHealthChecks("/health");
 
 // Configure the HTTP request pipeline.
@@ -153,6 +183,7 @@ app.MapHealthChecks("/health");
 
 //app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

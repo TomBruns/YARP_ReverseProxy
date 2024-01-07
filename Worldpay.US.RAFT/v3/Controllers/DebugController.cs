@@ -24,7 +24,6 @@ namespace Worldpay.US.RAFT.v3.Controllers;
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiController]
 [SwaggerControllerDisplayOrder(2)]
-[AllowAnonymous]
 public class DebugController : ControllerBase
 {
     private readonly ILogger<DebugController> _logger;
@@ -46,6 +45,7 @@ public class DebugController : ControllerBase
     [HttpGet(template: "version", Name = "getVersion")]
     [Produces("text/plain")]
     [SwaggerOperation(Tags = new[] { "debug" })]
+    [AllowAnonymous]
     public ActionResult<string> GetVersion(ApiVersion apiVersion) => Ok($"Controller = {GetType().Name}\nVersion = {apiVersion}");
 
     /// <summary>
@@ -55,6 +55,7 @@ public class DebugController : ControllerBase
     [HttpGet(template: "headers", Name = "getHttpHeaders")]
     [Produces("text/plain")]
     [SwaggerOperation(Tags = new[] { "debug" })]
+    [Authorize]
     public ActionResult<string> GetHttpHeaders()
     {
         var headers = new StringBuilder();
@@ -68,6 +69,29 @@ public class DebugController : ControllerBase
     }
 
     /// <summary>
+    /// Returns the list of claims in the Auth Header
+    /// </summary>
+    /// <returns>ActionResult&lt;System.String&gt;.</returns>
+    [HttpGet(template: "claimsFromAuthHeader", Name = "getClaimsFromAuthHeader")]
+    [Produces("text/plain")]
+    [SwaggerOperation(Tags = new[] { "debug" })]
+    [Authorize]
+    public ActionResult<string> GetClaimsFromAuthHeader()
+    {
+        var authenticatedUser = User;
+
+        var claims = new StringBuilder();
+
+        // loop thru all the headers
+        foreach (var claim in authenticatedUser.Claims)
+        {
+            claims.AppendLine($"[{claim.Type}]: {claim.Value}");
+        }
+
+        return new OkObjectResult(claims.ToString());
+    }
+
+    /// <summary>
     /// Returns a test HMAC signed jwt for a API Key.
     /// </summary>
     /// <param name="identityService">The identity service.</param>
@@ -78,6 +102,7 @@ public class DebugController : ControllerBase
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [SwaggerOperation(Tags = new[] { "debug" })]
+    [AllowAnonymous]
     public ActionResult<string> GetHMACJWT([FromServices] IdentityService identityService, [FromQuery] string apiKey)
     {
         var callerIdentity = identityService.ValidateAPIKey(apiKey);
@@ -113,6 +138,7 @@ public class DebugController : ControllerBase
     [ProducesResponseType(typeof(Dictionary<string, string>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [SwaggerOperation(Tags = new[] { "debug" })]
+    [AllowAnonymous]
     public ActionResult<Dictionary<string, string>> ValidateHMACJWT([FromServices] IdentityService identityService, [FromBody] string hmacToken)
     {
         (bool isValid, Dictionary<string, string> claims) = identityService.ValidateHMACJWT(hmacToken);
@@ -141,6 +167,7 @@ public class DebugController : ControllerBase
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [SwaggerOperation(Tags = new[] { "debug" })]
+    [AllowAnonymous]
     public ActionResult<string> GetRSAJWT([FromServices] IdentityService identityService, [FromQuery] string apiKey)
     {
         var callerIdentity = identityService.ValidateAPIKey(apiKey);
@@ -176,6 +203,7 @@ public class DebugController : ControllerBase
     [ProducesResponseType(typeof(Dictionary<string, string>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [SwaggerOperation(Tags = new[] { "debug" })]
+    [AllowAnonymous]
     public ActionResult<Dictionary<string, string>> ValidateRSAJWT([FromServices] IdentityService identityService, [FromBody] string rsaToken)
     {
         (bool isValid, Dictionary<string, string> claims) = identityService.ValidateRSAJWT(rsaToken);

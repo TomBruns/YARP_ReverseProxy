@@ -14,6 +14,10 @@ using Worldpay.US.RAFT.Swagger;
 using Worldpay.US.Swagger.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Worldpay.US.RAFT.v3.Models;
+using Microsoft.AspNetCore.Authentication;
+using Worldpay.US.RAFT.Utilities;
+using Worldpay.US.RAFT.Entities;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 
 namespace Worldpay.US.RAFT.v3.Controllers;
 
@@ -24,7 +28,7 @@ namespace Worldpay.US.RAFT.v3.Controllers;
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [SwaggerControllerDisplayOrder(1)]
-[Authorize]
+[Authorize(Policy = "ValidRAFTAuthHeader")]
 public class PaymentsController : ControllerBase
 {
     private readonly ILogger<PaymentsController> _logger;
@@ -54,7 +58,7 @@ public class PaymentsController : ControllerBase
     ///  * If you are sending PAN, you can request that the response contains a **WorldPay Security Token** useable in future transactions.
     /// </remarks>
     /// <returns></returns>
-    [HttpGet(template: "authorize", Name = "authorize")]
+    [HttpPost(template: "authorize", Name = "authorize")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(AuthorizePaymentResponseDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
@@ -62,6 +66,39 @@ public class PaymentsController : ControllerBase
     [SwaggerOperation(Tags = new[] { "payments" })]
     public ActionResult<AuthorizePaymentResponseDTO> Authorize(AuthorizePaymentRequestDTO request)
     {
+        // get the custom claims
+        (bool IsWellFormedClaimsObject, RAFTClaimsBE raftClaims) = ClaimsHelpers.GetRAFTClaims(User.Claims);
+
+        #region === Authorization Checks ===
+        // this check is now handled by the custom auth policy: ValidRAFTAuthHeader
+        //if (!IsWellFormedClaimsObject) 
+        //{
+        //    //return new UnauthorizedResult();
+        //    // for testing return BadRequest error so we can include a ProblemDetails
+        //    return new BadRequestObjectResult(new ProblemDetails()
+        //    {
+        //        Status = StatusCodes.Status400BadRequest,
+        //        Title = $"Invalid Auth header.",
+        //        Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+        //        Detail = $"Target => [{raftClaims.Target}] || IntegratorId => [{raftClaims.IntegratorId}]"
+        //    });
+        //}
+
+        // this really should be a relationship configured in MDB, for a simple test we will jsut make sure it matches
+        if (raftClaims.IntegratorId != request.MerchantData.MerchantId)
+        {
+            //return new UnauthorizedResult();
+            // for testing return BadRequest error so we can include a ProblemDetails
+            return new BadRequestObjectResult(new ProblemDetails()
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = $"Integrator Id is not valid for MerchantId.",
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+                Detail = $"IntegratorId => [{raftClaims.IntegratorId}] || MerchantId => [{request.MerchantData.MerchantId}]"
+            });
+        }
+        #endregion
+
         return Ok(new AuthorizePaymentResponseDTO() { AuthorizeResult = @"response from RAFT" });
     }
 

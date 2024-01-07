@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Worldpay.US.RAFT.v3.Models
@@ -28,6 +29,7 @@ namespace Worldpay.US.RAFT.v3.Models
         /// </summary>
         /// <value>The merchant identifier.</value>
         [JsonPropertyName("merchantId")]
+        [Required]
         public string MerchantId { get; set; }
     }
 }

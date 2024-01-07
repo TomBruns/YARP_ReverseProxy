@@ -34,7 +34,6 @@
 		</AssemblyAttribute>
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Utilities\" />
 	  <Folder Include="v2\Examples\" />
 	</ItemGroup>
 	<ItemGroup>
