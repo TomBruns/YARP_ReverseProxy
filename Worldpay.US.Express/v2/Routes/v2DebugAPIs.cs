@@ -10,6 +10,7 @@ using FluentValidation.AspNetCore;
 using Worldpay.US.Express.v2.Models;
 using Worldpay.US.Express.Swagger;
 using Worldpay.US.Swagger.Extensions;
+using Worldpay.US.Express.Utilities;
 
 namespace Worldpay.US.Express.v2.Routes;
 
@@ -23,6 +24,9 @@ internal static class v4DebugAPIs
 
     public static RouteGroupBuilder MapV2DebugEndpoints(this RouteGroupBuilder group)
     {
+        // ===================
+        // GET /debug/headers
+        // ===================
         group.MapGet($"/{ROUTE_GROUP_PREFIX}/headers", (HttpRequest request) =>
         {
             var headers = new StringBuilder();
@@ -45,9 +49,22 @@ internal static class v4DebugAPIs
             Description = @"Longer info",
         });
 
-        //group.MapGet("/version", (HttpRequest request) =>
-        //{
-        //});
+        // ===================
+        // GET /debug/health
+        // ===================
+        group.MapGet($"/{ROUTE_GROUP_PREFIX}/health", ([FromServices] IServiceCollection services) =>
+        {
+            return Results.Text("ok");
+        })
+        .AllowAnonymous()
+        .WithName("getHealthv2")
+        .WithTags("debug")
+        .Produces<string>(StatusCodes.Status200OK, @"text/plain")
+        .WithOpenApi(operation => new(operation)
+        {
+            Summary = @"Returns The current Health Check setting.",
+            Description = @"Longer info",
+        });
 
         return group;
     }

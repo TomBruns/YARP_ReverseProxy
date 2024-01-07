@@ -51,8 +51,8 @@ public class WeatherController : ControllerBase
     /// <returns></returns>
     [HttpGet(template: "forecast", Name = "getWeatherForecast")]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(IEnumerable<WeatherForecastDTO>), 200)]
-    [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+    [ProducesResponseType(typeof(IEnumerable<WeatherForecastDTO>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [SwaggerOperation(Tags = new[] { "weather" })]
     [SwaggerResponseExample(StatusCodes.Status200OK, typeof(GetWeatherForecastv3_OkExamples))]
     [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(GetWeatherForecastv3_BadRequestExamples))]

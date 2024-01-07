@@ -10,6 +10,7 @@
 
 	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<UserSecretsId>7b8cd0a3-0823-4bc5-955c-c73228f38d0e</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -29,6 +30,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Worldpay.US.IDP\Worldpay.US.IDP.csproj" />
+	  <ProjectReference Include="..\Worldpay.US.JWTTokens\Worldpay.US.JWTTokens.csproj" />
 	  <ProjectReference Include="..\Worldpay.US.Swagger.Extensions\Worldpay.US.Swagger.Extensions.csproj" />
 	</ItemGroup>
 

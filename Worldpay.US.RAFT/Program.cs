@@ -11,11 +11,15 @@ using Worldpay.US.RAFT.Utilities;
 using Worldpay.US.Swagger.Extensions;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Worldpay.US.IDP;
+using Worldpay.US.JWTTokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(
+    static options => options.JsonSerializerOptions.TypeInfoResolverChain.Add(TokenSigningInfoContextBE.Default));
+
 builder.Services.AddProblemDetails();
 builder.Services.AddApiVersioning(
                     options =>
@@ -107,6 +111,12 @@ builder.Services.AddSwaggerGen(
     });
 
 builder.Services.AddAuthentication("Bearer").AddJwtBearer();
+
+// for now the JWT singing info is stored in a user secrets file
+//  in real use this info would be in an identity provider (ex iDP)
+var identityRepoInfo = builder.Configuration.GetSection("identityRepoInfo").Get<IdentityRepoInfoBE>();
+var idp = new IdentityService(identityRepoInfo);
+builder.Services.AddSingleton(idp);
 
 var app = builder.Build();
 

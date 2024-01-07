@@ -23,6 +23,9 @@ internal static class v1WeatherAPIs
 
     public static RouteGroupBuilder MapV1Endpoints(this RouteGroupBuilder group)
     {
+        // ===================
+        // GET /weather/forecast
+        // ===================
         group.MapGet($"/{ROUTE_GROUP_PREFIX}/forecast", ([FromQuery] int? numberOfDays = 5) =>
         {
             #region == Validation the input params

@@ -1,15 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <FileVersion>1.0.23364.4</FileVersion>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<FileVersion>1.0.23364.4</FileVersion>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Yarp.ReverseProxy" Version="2.1.0" />
-    <PackageReference Include="Yarp.Telemetry.Consumption" Version="2.1.0" />
-  </ItemGroup>
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<UserSecretsId>7b8cd0a3-0823-4bc5-955c-c73228f38d0e</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Yarp.ReverseProxy" Version="2.1.0" />
+		<PackageReference Include="Yarp.Telemetry.Consumption" Version="2.1.0" />
+	</ItemGroup>
 
 </Project>

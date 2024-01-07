@@ -23,6 +23,9 @@ internal static class v4PaymentsAPIs
 
     public static RouteGroupBuilder MapV4PaymentEndpoints(this RouteGroupBuilder group)
     {
+        // ===================
+        // GET /payments/authorize
+        // ===================
         group.MapGet($"/{ROUTE_GROUP_PREFIX}/authorize", () =>
         {
             //return Results.Ok(@"response from EXPRESS");  // doing this wraps the response in double quotes

@@ -29,6 +29,9 @@ internal static class v4WeatherAPIs
 
     public static RouteGroupBuilder MapV4WeatherEndpoints(this RouteGroupBuilder group)
     {
+        // ===================
+        // GET /weather/forecast
+        // ===================
         group.MapGet($"/{ROUTE_GROUP_PREFIX}/forecast",
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(GetWeatherForecastv4_OkExamples))]
         [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(GetWeatherForecastv4_BadRequestExamples))]

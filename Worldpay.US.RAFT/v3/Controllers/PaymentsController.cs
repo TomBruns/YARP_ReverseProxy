@@ -13,6 +13,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using Worldpay.US.RAFT.Swagger;
 using Worldpay.US.Swagger.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using Worldpay.US.RAFT.v3.Models;
 
 namespace Worldpay.US.RAFT.v3.Controllers;
 
@@ -49,12 +50,19 @@ public class PaymentsController : ControllerBase
     ///  * This single endpoint supports both a wide range of Payment Methods for Card Present &amp; eCommerce(Card Not Present) requests.
     ///  * You can optionally Capture(for settlement) in one(1) step using the ** AutoCapture** option
     ///  * You can also use this method for **Card verification checks** with a $0 authorization amount
-    ///  * You can optionally perform an unreferenced incremenatal Auth by setting a processing option flag + ?
+    ///  * You can optionally perform an unreferenced incremental Auth by setting a processing option flag + ?
     ///  * If you are sending PAN, you can request that the response contains a **WorldPay Security Token** useable in future transactions.
     /// </remarks>
     /// <returns></returns>
     [HttpGet(template: "authorize", Name = "authorize")]
-    [Produces("text/plain")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(AuthorizePaymentResponseDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Tags = new[] { "payments" })]
-    public ActionResult<string> Authorize() => Ok(@"response from RAFT");
+    public ActionResult<AuthorizePaymentResponseDTO> Authorize(AuthorizePaymentRequestDTO request)
+    {
+        return Ok(new AuthorizePaymentResponseDTO() { AuthorizeResult = @"response from RAFT" });
+    }
+
 }

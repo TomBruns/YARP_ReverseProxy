@@ -256,3 +256,8 @@ iterations.....................: 1752010 23359.687506/s
 vus............................: 1       min=1          max=49
 vus_max........................: 50      min=50         max=50
 ```
+
+
+
+https://generate-random.org/api-key-generator
+https://code-maze.com/aspnetcore-api-key-authentication/

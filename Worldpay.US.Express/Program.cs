@@ -1,7 +1,8 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using Asp.Versioning;
 using Swashbuckle.AspNetCore.Filters;
@@ -13,6 +14,9 @@ using Worldpay.US.Express.v2.Routes;
 using Worldpay.US.Express.v4.Routes;
 using Worldpay.US.Express.Utilities;
 using Worldpay.US.Swagger.Extensions;
+using Worldpay.US.JWTTokens;
+
+using Worldpay.US.IDP;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -117,6 +121,12 @@ builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
 builder.Services.AddAuthentication("Bearer").AddJwtBearer();
 builder.Services.AddAuthorization();
 
+// for now the JWT singing info is stored in a user secrets file
+//  in real use this info would be in an identity provider (ex iDP)
+var identityRepoInfo = builder.Configuration.GetSection("identityRepoInfo").Get<IdentityRepoInfoBE>();
+var idp = new IdentityService(identityRepoInfo);
+builder.Services.AddSingleton(idp);
+
 var app = builder.Build();
 
 app.MapHealthChecks("/health");
@@ -138,7 +148,7 @@ app.MapHealthChecks("/health");
         // https://github.com/domaindrivendev/Swashbuckle.AspNetCore?tab=readme-ov-file#working-with-virtual-directories-and-reverse-proxies
         options.RoutePrefix = "swagger";
 
-        // needed this to get both versions to show up in the swagger ui
+        // needed this to get all versions to show up in the swagger ui
         options.SwaggerEndpoint("v1/swagger.json", "Version 1.0");
         options.SwaggerEndpoint("v2/swagger.json", "Version 2.0");
         options.SwaggerEndpoint("v4/swagger.json", "Version 4.0");
