@@ -10,6 +10,9 @@ using FluentValidation.AspNetCore;
 using Worldpay.US.Express.v4.Models;
 using Worldpay.US.Express.Swagger;
 using Worldpay.US.Swagger.Extensions;
+using Worldpay.US.IDP;
+using Worldpay.US.Express.Utilities;
+using Worldpay.US.Express.Entities;
 
 namespace Worldpay.US.Express.v4.Routes;
 
@@ -24,14 +27,32 @@ internal static class v4PaymentsAPIs
     public static RouteGroupBuilder MapV4PaymentEndpoints(this RouteGroupBuilder group)
     {
         // ===================
-        // GET /payments/authorize
+        // POST /payments/authorize
         // ===================
-        group.MapGet($"/{ROUTE_GROUP_PREFIX}/authorize", () =>
+        group.MapPost($"/{ROUTE_GROUP_PREFIX}/authorize", Results<Ok<AuthorizePaymentResponseDTO>, UnauthorizedHttpResult, BadRequest<ProblemDetails>> (HttpContext context, [FromServices] IdentityService identityService, [FromBody] AuthorizePaymentRequestDTO request) =>
         {
-            //return Results.Ok(@"response from EXPRESS");  // doing this wraps the response in double quotes
-            return Results.Text(@"response from EXPRESS");
+            // get the custom claims
+            (bool IsWellFormedClaimsObject, ExpressClaimsBE expressClaims) = ClaimsHelpers.GetExpressClaims(context.User.Claims);
+
+            #region === Authorization Checks ===
+            // this really should be a relationship configured in IP CRM/, for a simple test we will jsut make sure it matches
+            if (expressClaims.AcceptorId != request.MerchantData.MerchantId)
+            {
+                //return new UnauthorizedResult();
+                // for testing return BadRequest error so we can include a ProblemDetails
+                return TypedResults.BadRequest<ProblemDetails>(new ProblemDetails()
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Title = $"Integrator Id is not valid for MerchantId.",
+                    Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+                    Detail = $"AcceptorId => [{expressClaims.AcceptorId}] || MerchantId => [{request.MerchantData.MerchantId}]"
+                });
+            }
+            #endregion
+
+            return TypedResults.Ok(new AuthorizePaymentResponseDTO() { AuthorizeResult = @"response from Express" });
         })
-        .RequireAuthorization()
+        .RequireAuthorization("ValidExpressAuthHeader")
         .WithName("authorizev4")
         .WithTags("payments")
         .Produces<string>(StatusCodes.Status200OK, @"text/plain")

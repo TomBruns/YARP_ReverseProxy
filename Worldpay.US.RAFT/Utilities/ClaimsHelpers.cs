@@ -18,9 +18,6 @@ internal static class ClaimsHelpers
     /// <returns>System.ValueTuple&lt;System.Boolean, RAFTClaimsBE&gt;.</returns>
     internal static (bool IsWellFormedClaimsObject, RAFTClaimsBE raftClaims) GetRAFTClaims(IEnumerable<Claim> claims) 
     { 
-        //var target = claims.FirstOrDefault(c => c.Type == TARGET_CLAIM_NAME);
-        //var integratorId = claims.FirstOrDefault(c => c.Type == INTEGRATOR_ID_CLAIM_NAME);
-
         var raftClaims = new RAFTClaimsBE()
         {
             Target = claims.FirstOrDefault(c => c.Type == TARGET_CLAIM_NAME)?.Value,

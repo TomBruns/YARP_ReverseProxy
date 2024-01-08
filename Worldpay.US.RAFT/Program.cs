@@ -1,22 +1,22 @@
 using System.Reflection;
+using System.Text;
+using System.Xml.Linq;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 using Asp.Versioning;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.Filters;
 
 using Worldpay.US.RAFT.Swagger;
 using Worldpay.US.RAFT.Utilities;
 using Worldpay.US.Swagger.Extensions;
-using Swashbuckle.AspNetCore.Filters;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Worldpay.US.IDP;
 using Worldpay.US.JWTTokens;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using System.Xml.Linq;
-using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -117,6 +117,7 @@ builder.Services.AddSwaggerGen(
         // sort the order that the controllers are listed using the custom attribute: SwaggerControllerOrder, by default they are alphabetical
         options.OrderActionsBy((apiDesc) => $"{swaggerControllerOrder.SortKey(apiDesc.ActionDescriptor.RouteValues["controller"])}");
     });
+builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
 
 // for now the JWT singing info is stored in a user secrets file
 //  in real use this info would be in an identity provider (ex iDP)

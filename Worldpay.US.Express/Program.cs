@@ -17,8 +17,16 @@ using Worldpay.US.Swagger.Extensions;
 using Worldpay.US.JWTTokens;
 
 using Worldpay.US.IDP;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Cryptography;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// source generator class to correctly support TimeSpan types
+builder.Services.Configure<JsonOptions>(options => options.JsonSerializerOptions.TypeInfoResolverChain.Add(TokenSigningInfoContextBE.Default));
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -38,7 +46,6 @@ builder.Services.AddEndpointsApiExplorer()
                                             .Title("Versioning Policy")
                                             .Type("text/html");
                     })
-                //.AddMvc()
                 .AddApiExplorer(
                     options =>
                     {
@@ -115,17 +122,40 @@ builder.Services.AddSwaggerGen(
         //  Note: "controller" is key in this oob collection even for minimal apis
         //options.OrderActionsBy((apiDesc) => $"{swaggerControllerOrder.SortKey(apiDesc.ActionDescriptor.RouteValues["controller"])}");
     });
-
 builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
-
-builder.Services.AddAuthentication("Bearer").AddJwtBearer();
-builder.Services.AddAuthorization();
 
 // for now the JWT singing info is stored in a user secrets file
 //  in real use this info would be in an identity provider (ex iDP)
-var identityRepoInfo = builder.Configuration.GetSection("identityRepoInfo").Get<IdentityRepoInfoBE>();
+var identityRepoInfo = builder.Configuration.GetSection("identityRepoInfo").Get<IdentityRepoInfoBE>() ?? throw new ArgumentNullException("Missing App Config: [identityRepoInfo]");
+// create an instance of the iDP service
 var idp = new IdentityService(identityRepoInfo);
 builder.Services.AddSingleton(idp);
+
+// configure JWT authentication for Services or endpoints that have the [Authorize] attribute
+RSA rsa = RSA.Create();
+rsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(identityRepoInfo.TokenSigningInfo.PublicKey), out int bytesRead);
+var securityKey = new RsaSecurityKey(rsa);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = identityRepoInfo.TokenSigningInfo.Issuer,
+                        ValidAudience = identityRepoInfo.TokenSigningInfo.Audience,
+                        IssuerSigningKey = securityKey
+                    };
+                });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ValidExpressAuthHeader", policy => policy.Requirements.Add(new ValidExpressAuthHeader()));
+});
+
+builder.Services.AddSingleton<IAuthorizationHandler, ExpressAuthorizationHandler>();
 
 var app = builder.Build();
 
@@ -188,6 +218,7 @@ var v4 = apis.MapGroup("/api/v{version:apiVersion}")
 
 //app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.Run();

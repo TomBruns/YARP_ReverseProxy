@@ -50,8 +50,7 @@ namespace Worldpay.US.JWTTokens
         [JsonPropertyName("comment")]
         public string Comment { get; set; }
 
-
-        [JsonPropertyName("addlInfo")]
-        public Dictionary<string, string> AddlInfo { get; set; }
+        [JsonPropertyName("scopes")]
+        public Dictionary<string, Dictionary<string, string>> Scopes { get; set; }
     }
 }

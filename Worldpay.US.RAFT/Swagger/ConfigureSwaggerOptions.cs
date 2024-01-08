@@ -115,7 +115,7 @@ namespace Worldpay.US.RAFT.Swagger
                     break;
 
                 case "3.0":
-                    info.Description = @"<b>Controller</b> based webAPIs endpoints w/ JWT Authentication
+                    info.Description = @"<b>Controller</b> based webAPIs endpoints w/ JWT (HMAC signed) Authentication w/ custom claims
                                     <br/>
                                     <br/> 
                                     Features:

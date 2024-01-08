@@ -48,14 +48,14 @@ public class IdentityService
     /// <returns>System.ValueTuple&lt;System.Boolean, System.String&gt;.</returns>
     public (bool, string) CreateHMACJWT(IdentityInfoBE identity)
     {
-        if (identity == null || identity.AddlInfo == null) 
+        if (identity == null || identity.Scopes == null) 
         {
             return (false,  string.Empty);
         }
 
         // build the custom claims list
         var claims = new Dictionary<string, object>();
-        foreach (var kvp in identity.AddlInfo)
+        foreach (var kvp in identity.Scopes)
         {
             claims.Add(kvp.Key, kvp.Value);
         }
@@ -155,14 +155,14 @@ public class IdentityService
     /// <returns>System.ValueTuple&lt;System.Boolean, System.String&gt;.</returns>
     public (bool, string) CreateRSAJWT(IdentityInfoBE identity)
     {
-        if (identity == null || identity.AddlInfo == null)
+        if (identity == null || identity.Scopes == null)
         {
             return (false, string.Empty);
         }
 
         // build the custom claims list
         var claims = new Dictionary<string, object>();
-        foreach (var kvp in identity.AddlInfo)
+        foreach (var kvp in identity.Scopes)
         {
             claims.Add(kvp.Key, kvp.Value);
         }
