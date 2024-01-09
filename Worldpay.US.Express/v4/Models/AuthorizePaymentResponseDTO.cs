@@ -15,4 +15,10 @@ public class AuthorizePaymentResponseDTO
     /// <value>The authorize result.</value>
     [JsonPropertyName("authorizeResult")]
     public string AuthorizeResult { get; set; }
+
+    [JsonPropertyName("acceptorId")]
+    public string AcceptorId { get; set; }
+
+    [JsonPropertyName("accountToken")]
+    public string AccountToken { get; set; }
 }

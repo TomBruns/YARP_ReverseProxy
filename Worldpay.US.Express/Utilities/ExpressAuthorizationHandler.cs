@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json;
+using Worldpay.US.Express.Entities;
 
 namespace Worldpay.US.Express.Utilities;
 
@@ -11,37 +12,46 @@ internal class ExpressAuthorizationHandler : AuthorizationHandler<ValidExpressAu
 {
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ValidExpressAuthHeader requirement)
     {
-        // Bail if the Target is not available
-        var claim = context.User.Claims.First(c => c.Type.ToLower() == ClaimsHelpers.SCOPE_CLAIM_NAME.ToLower());
-        if (claim == null || string.IsNullOrEmpty(claim.Value))
+        (bool isWellFormedClaimsObject, ExpressClaimsBE expressClaims) = ClaimsHelpers.GetExpressClaims(context.User.Claims);
+
+        if (isWellFormedClaimsObject)
         {
-            return Task.CompletedTask;
-        }
-
-        try
-        {
-            var ourClaims = JsonSerializer.Deserialize<Dictionary<string, string>>(claim.Value);
-
-            // Bail if the Acceptor Id is not available 
-            if (!ourClaims.ContainsKey(ClaimsHelpers.ACCEPTOR_ID_CLAIM_NAME) && !string.IsNullOrEmpty(ourClaims[ClaimsHelpers.ACCEPTOR_ID_CLAIM_NAME]))
-            {
-                return Task.CompletedTask;
-            }
-
-            // Bail if the Account Token is not available 
-            if (!ourClaims.ContainsKey(ClaimsHelpers.ACCOUNT_TOKEN_CLAIM_NAME) && !string.IsNullOrEmpty(ourClaims[ClaimsHelpers.ACCOUNT_TOKEN_CLAIM_NAME]))
-            {
-                return Task.CompletedTask;
-            }
-
-            // Mark the requirement as satisfied
             context.Succeed(requirement);
-            return Task.CompletedTask;
         }
-        catch (Exception ex)
-        {
-            return Task.CompletedTask;
-        }
+
+        return Task.CompletedTask;
+
+        //// Bail if the Scope is not available
+        //var claim = context.User.Claims.First(c => c.Type.ToLower() == ClaimsHelpers.SCOPE_CLAIM_NAME.ToLower());
+        //if (claim == null || string.IsNullOrEmpty(claim.Value))
+        //{
+        //    return Task.CompletedTask;
+        //}
+
+        //try
+        //{
+        //    var ourClaims = JsonSerializer.Deserialize<Dictionary<string, string>>(claim.Value);
+
+        //    // Bail if the Acceptor Id is not available 
+        //    if (!ourClaims.ContainsKey(ClaimsHelpers.ACCEPTOR_ID_CLAIM_NAME) && !string.IsNullOrEmpty(ourClaims[ClaimsHelpers.ACCEPTOR_ID_CLAIM_NAME]))
+        //    {
+        //        return Task.CompletedTask;
+        //    }
+
+        //    // Bail if the Account Token is not available 
+        //    if (!ourClaims.ContainsKey(ClaimsHelpers.ACCOUNT_TOKEN_CLAIM_NAME) && !string.IsNullOrEmpty(ourClaims[ClaimsHelpers.ACCOUNT_TOKEN_CLAIM_NAME]))
+        //    {
+        //        return Task.CompletedTask;
+        //    }
+
+        //    // Mark the requirement as satisfied
+        //    context.Succeed(requirement);
+        //    return Task.CompletedTask;
+        //}
+        //catch (Exception ex)
+        //{
+        //    return Task.CompletedTask;
+        //}
     }
 }
 

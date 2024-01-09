@@ -50,7 +50,12 @@ internal static class v4PaymentsAPIs
             }
             #endregion
 
-            return TypedResults.Ok(new AuthorizePaymentResponseDTO() { AuthorizeResult = @"response from Express" });
+            return TypedResults.Ok(new AuthorizePaymentResponseDTO() 
+            { 
+                AuthorizeResult = @"response from Express",
+                AcceptorId = expressClaims.AcceptorId,
+                AccountToken = expressClaims.AccountToken
+            });
         })
         .RequireAuthorization("ValidExpressAuthHeader")
         .WithName("authorizev4")

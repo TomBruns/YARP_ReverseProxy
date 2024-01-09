@@ -4,6 +4,7 @@ using System.Net;
 using System.Runtime.Intrinsics.X86;
 using System.Transactions;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,12 +13,9 @@ using Swashbuckle.AspNetCore.Annotations;
 
 using Worldpay.US.RAFT.Swagger;
 using Worldpay.US.Swagger.Extensions;
-using Microsoft.AspNetCore.Authorization;
 using Worldpay.US.RAFT.v3.Models;
-using Microsoft.AspNetCore.Authentication;
 using Worldpay.US.RAFT.Utilities;
 using Worldpay.US.RAFT.Entities;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 
 namespace Worldpay.US.RAFT.v3.Controllers;
 
@@ -99,7 +97,10 @@ public class PaymentsController : ControllerBase
         }
         #endregion
 
-        return Ok(new AuthorizePaymentResponseDTO() { AuthorizeResult = @"response from RAFT" });
+        return Ok(new AuthorizePaymentResponseDTO() 
+        { 
+            AuthorizeResult = @"response from RAFT",
+            IntegratorId = raftClaims.IntegratorId
+        });
     }
-
 }

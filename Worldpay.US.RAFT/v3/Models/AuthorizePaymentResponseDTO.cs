@@ -15,5 +15,8 @@ namespace Worldpay.US.RAFT.v3.Models
         /// <value>The authorize result.</value>
         [JsonPropertyName("authorizeResult")]
         public string AuthorizeResult { get; set; }
+
+        [JsonPropertyName("integratorId")]
+        public string IntegratorId { get; set; }
     }
 }
