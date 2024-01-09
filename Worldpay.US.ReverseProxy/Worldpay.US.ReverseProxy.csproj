@@ -17,4 +17,11 @@
 		<PackageReference Include="Yarp.Telemetry.Consumption" Version="2.1.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Reflection.AssemblyMetadata">
+			<_Parameter1>CompileTimestampUTC</_Parameter1>
+			<_Parameter2>$([System.DateTime]::UtcNow.ToString('F'))</_Parameter2>
+		</AssemblyAttribute>
+	</ItemGroup>
+	
 </Project>

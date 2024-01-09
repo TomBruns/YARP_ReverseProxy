@@ -33,9 +33,11 @@
 			<_Parameter2>$([System.DateTime]::UtcNow.ToString('F'))</_Parameter2>
 		</AssemblyAttribute>
 	</ItemGroup>
+	
 	<ItemGroup>
 	  <Folder Include="v2\Examples\" />
 	</ItemGroup>
+	
 	<ItemGroup>
 	  <ProjectReference Include="..\Worldpay.US.IDP\Worldpay.US.IDP.csproj" />
 	  <ProjectReference Include="..\Worldpay.US.Swagger.Extensions\Worldpay.US.Swagger.Extensions.csproj" />

@@ -89,7 +89,8 @@ builder.Services.AddSwaggerGen(
                 @"v1",
                 new List<TagDescription>()
                 {
-                    new TagDescription() { Name = @"weather", Description = @"Weather Service endpoints"}
+                    new TagDescription() { Name = @"weather", Description = @"Weather Service endpoints"},
+                    new TagDescription() { Name = @"health", Description = @"Health Check endpoints"}
                 }
             },
             {
@@ -98,7 +99,8 @@ builder.Services.AddSwaggerGen(
                 {
                     new TagDescription() { Name = @"payments", Description = @"Payments Service endpoints"},
                     new TagDescription() { Name = @"debug", Description = @"Debug Service endpoints"},
-                    new TagDescription() { Name = @"weather", Description = @"Weather Service endpoints"}
+                    new TagDescription() { Name = @"weather", Description = @"Weather Service endpoints"},
+                    new TagDescription() { Name = @"health", Description = @"Health Check endpoints"}
                 }
             },
             {
@@ -107,7 +109,8 @@ builder.Services.AddSwaggerGen(
                 {
                     new TagDescription() { Name = @"payments", Description = @"Payments Service endpoints"},
                     new TagDescription() { Name = @"weather", Description = @"Weather Service endpoints"},
-                    new TagDescription() { Name = @"debug", Description = @"Debug Service endpoints"}
+                    new TagDescription() { Name = @"debug", Description = @"Debug Service endpoints"},
+                    new TagDescription() { Name = @"health", Description = @"Health Check endpoints"}
                 }
              }
         };
@@ -121,6 +124,9 @@ builder.Services.AddSwaggerGen(
         // sort the order that the tags are listed using the custom attribute: SwaggerTagDisplayOrder, by default they are alphabetical
         //  Note: "controller" is key in this oob collection even for minimal apis
         //options.OrderActionsBy((apiDesc) => $"{swaggerControllerOrder.SortKey(apiDesc.ActionDescriptor.RouteValues["controller"])}");
+
+        // inject an "un-versioned" endpoint into all versioned swagger pages adding an Endpoint for the OOB Health Check monitoring
+        options.DocumentFilter<SwaggerHealthCheckEndpointDocFilter>();
     });
 builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
 

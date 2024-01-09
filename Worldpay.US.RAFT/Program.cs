@@ -116,6 +116,9 @@ builder.Services.AddSwaggerGen(
 
         // sort the order that the controllers are listed using the custom attribute: SwaggerControllerOrder, by default they are alphabetical
         options.OrderActionsBy((apiDesc) => $"{swaggerControllerOrder.SortKey(apiDesc.ActionDescriptor.RouteValues["controller"])}");
+
+        // inject an "unversioned" endpoint into all versioned swagger pages adding an Endpoint for the OOB Health Check monitoring
+        options.DocumentFilter<SwaggerHealthCheckEndpointDocFilter>();
     });
 builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
 
